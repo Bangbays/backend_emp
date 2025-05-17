@@ -1,0 +1,15 @@
+import "dotenv/config";
+
+export const {
+  PORT,
+  JWT_SECRET,
+  MAILTRAP_HOST,
+  MAILTRAP_PORT,
+  MAILTRAP_USER,
+  MAILTRAP_PASS,
+  FE_URL,
+  EMAIL_FROM,
+  CLOUDINARY_NAME,
+  CLOUDINARY_KEY,
+  CLOUDINARY_SECRET,
+} = process.env;
