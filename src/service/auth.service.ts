@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma";
 import { v4 as uuid } from "uuid";
-import { addHours } from "date-fns";
+import { addHours, addMonths } from "date-fns";
 import nodemailer from "nodemailer";
 import {
   MAILTRAP_HOST,
@@ -17,6 +17,7 @@ export async function registerUser(data: {
   lastName: string;
   email: string;
   password: string;
+  referralCode?: string;
 }) {
   const hash = await bcrypt.hash(data.password, 10);
   const user = await prisma.user.create({
@@ -25,8 +26,28 @@ export async function registerUser(data: {
       lastName: data.lastName,
       email: data.email,
       passwordHash: hash,
+      referrer: data.referralCode
+        ? { connect: { referralCode: data.referralCode } }
+        : undefined,
     },
   });
+
+  if (data.referralCode) {
+    const couponCode = `CPN-${uuid().slice(0, 8)}`;
+    await prisma.coupon.create({
+      data: {
+        code: couponCode,
+        discount: 50000,
+        userId: user.id,
+        expiresAt: addMonths(new Date(), 3),
+      },
+    });
+
+    await prisma.user.update({
+      where: { referralCode: data.referralCode },
+      data: { points: { increment: 10000 } },
+    });
+  }
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "3d" });
   return { user, token };
 }
