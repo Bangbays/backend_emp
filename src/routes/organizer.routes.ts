@@ -3,6 +3,7 @@ import { authenticate } from "../middleware/auth.middleware";
 import { validate } from "../middleware/validate.middleware";
 import { becomeOrganizerSchema } from "../schema/organizer.schema";
 import { becomeOrganizer } from "../controller/organizer.controller";
+import { authorize } from "../middleware/authorize";
 
 const router = Router();
 
