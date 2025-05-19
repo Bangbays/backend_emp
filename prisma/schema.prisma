@@ -10,29 +10,33 @@ datasource db {
 
 enum UserRole {
   CUSTOMER
+  PENDING_ORGANIZER
   ORGANIZER
 }
 
-
 model User {
-  id                String               @id @default(cuid())
-  firstName         String
-  lastName          String
-  email             String               @unique
-  passwordHash      String
-  role              UserRole             @default(CUSTOMER)
-  referralCode      String               @unique @default(cuid())
-  profilePictureUrl String?
-  bio               String?
-  createdAt         DateTime             @default(now())
-  updatedAt         DateTime             @updatedAt
+  id                 String               @id @default(cuid())
+  firstName          String
+  lastName           String
+  email              String               @unique
+  passwordHash       String
+  role               UserRole             @default(CUSTOMER)
+  referralCode       String               @unique @default(cuid())
+  profilePictureUrl  String?
+  bio                String?
+  organizationName   String?
+  organizationDesc   String?
+  organizationAddr   String?
+  organizationPhone  String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
   PasswordResetToken PasswordResetToken[]
-  referrer          User?                @relation("referrals", fields: [referrerId], references: [id])
-  referrerId        String?
-  referrals         User[]               @relation("referrals")
-  points            Int                  @default(0)
-  coupons           Coupon[]
-  pointBatches      UserPointBatch[]
+  referrer           User?                @relation("referrals", fields: [referrerId], references: [id])
+  referrerId         String?
+  referrals          User[]               @relation("referrals")
+  points             Int                  @default(0)
+  coupons            Coupon[]
+  pointBatches       UserPointBatch[]
 }
 
 model PasswordResetToken {
